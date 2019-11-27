@@ -45,8 +45,8 @@ func CreateWordCloud(wordList map[string]int, config *string) image.Image {
 		RandomPlacement: false,
 		FontFile:        "./rounded-l-mplus-2c-medium.ttf",
 		Colors:          DefaultColors,
-		Width:           2048,
-		Height:          2048,
+		Width:           3072,
+		Height:          3072,
 		Mask: MaskConf{"./mask.png", color.RGBA{
 			R: 0,
 			G: 0,
