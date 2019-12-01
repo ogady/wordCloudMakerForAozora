@@ -2,6 +2,7 @@ package morphoAnalyzer
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/bluele/mecab-golang"
@@ -41,7 +42,6 @@ func ParseToNode(text string) map[string]int {
 			break
 		}
 	}
-	fmt.Println(wordMap)
 	return wordMap
 }
 func contains(sl []string, s string) bool {
@@ -52,4 +52,24 @@ func contains(sl []string, s string) bool {
 		}
 	}
 	return false
+}
+
+type EntryMap struct {
+	name  string
+	value int
+}
+type List []EntryMap
+
+func GetMaxCount(m map[string]int) string {
+	a := List{}
+
+	for k, v := range m {
+		e := EntryMap{k, v}
+		a = append(a, e)
+	}
+
+	sort.SliceStable(a, func(i, j int) bool { return a[i].value < a[j].value })
+	fmt.Println(a[len(a)-1].name)
+	fmt.Println(a)
+	return a[len(a)-1].name
 }

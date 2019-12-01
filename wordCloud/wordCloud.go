@@ -1,26 +1,21 @@
 package wordCloud
 
 import (
-	"bufio"
-	"encoding/json"
 	"flag"
-	"fmt"
 	"image"
 	"image/color"
-	"os"
-	"path/filepath"
 
 	"github.com/psykhi/wordclouds"
 )
 
-func CreateWordCloud(wordList map[string]int, config *string) image.Image {
+func CreateWordCloud(wordList map[string]int, numOfChar int) image.Image {
 
 	var DefaultColors = []color.RGBA{
-		{0x1b, 0x1b, 0x1b, 0xff},
-		{0x48, 0x48, 0x4B, 0xff},
-		{0x59, 0x3a, 0xee, 0xff},
-		{0x65, 0xCD, 0xFA, 0xff},
-		{0x70, 0xD6, 0xBF, 0xff},
+		{0x00, 0x76, 0x2d, 0xff},
+		{0x43, 0x76, 0x2d, 0xff},
+		{0x73, 0x76, 0x2d, 0xff},
+		{0x90, 0x76, 0x2d, 0xff},
+		{0xb7, 0x7c, 0x2d, 0xff},
 	}
 
 	type MaskConf struct {
@@ -40,14 +35,12 @@ func CreateWordCloud(wordList map[string]int, config *string) image.Image {
 	}
 
 	var DefaultConf = Conf{
-		FontMaxSize:     700,
-		FontMinSize:     20,
 		RandomPlacement: false,
 		FontFile:        "./rounded-l-mplus-2c-medium.ttf",
 		Colors:          DefaultColors,
-		Width:           3072,
-		Height:          3072,
-		Mask: MaskConf{"./mask.png", color.RGBA{
+		Width:           2048,
+		Height:          2048,
+		Mask: MaskConf{"", color.RGBA{
 			R: 0,
 			G: 0,
 			B: 0,
@@ -59,20 +52,6 @@ func CreateWordCloud(wordList map[string]int, config *string) image.Image {
 
 	// Load config
 	conf := DefaultConf
-	f, err := os.Open(*config)
-	if err == nil {
-		defer f.Close()
-		reader := bufio.NewReader(f)
-		dec := json.NewDecoder(reader)
-		err = dec.Decode(&conf)
-		if err != nil {
-			fmt.Printf("Failed to decode config, using defaults instead: %s\n", err)
-		}
-	} else {
-		fmt.Println("No config file. Using defaults")
-	}
-
-	os.Chdir(filepath.Dir(*config))
 
 	var boxes []*wordclouds.Box
 	if conf.Mask.File != "" {
@@ -90,13 +69,14 @@ func CreateWordCloud(wordList map[string]int, config *string) image.Image {
 
 	w := wordclouds.NewWordcloud(wordList,
 		wordclouds.FontFile(conf.FontFile),
-		wordclouds.FontMaxSize(conf.FontMaxSize),
-		wordclouds.FontMinSize(conf.FontMinSize),
+		wordclouds.FontMaxSize(conf.Width/(numOfChar+5)),
+		wordclouds.FontMinSize(conf.Width/(numOfChar+5)/10),
 		wordclouds.Colors(colors),
 		wordclouds.MaskBoxes(boxes),
 		wordclouds.Height(conf.Height),
 		wordclouds.Width(conf.Width),
-		wordclouds.RandomPlacement(conf.RandomPlacement))
+		wordclouds.RandomPlacement(conf.RandomPlacement),
+	)
 
 	img := w.Draw()
 	return img
