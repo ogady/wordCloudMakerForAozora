@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/ogady/wordCloudMaker/decoder"
+	"github.com/ogady/wordCloudMakerForAozora/decoder"
 )
 
 func Scrape(url string) string {

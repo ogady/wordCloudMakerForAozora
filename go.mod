@@ -1,4 +1,4 @@
-module github.com/ogady/wordCloudMaker
+module github.com/ogady/wordCloudMakerForAozora
 
 go 1.13
 
