@@ -2,9 +2,9 @@ package aozora
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -66,7 +66,10 @@ type BookInfo struct {
 
 func GetBookInfoByTitleName(titleName string) (string, error) {
 
-	url := fmt.Sprintf("%s?title=%s", BOOKS_ENDPOINT, titleName)
+	values := url.Values{}
+	values.Add("title", titleName)
+	url := BOOKS_ENDPOINT + "?" + values.Encode()
+
 	// APIを叩いてデータを取得
 	resp, err := http.Get(url)
 	if err != nil {
@@ -81,11 +84,11 @@ func GetBookInfoByTitleName(titleName string) (string, error) {
 	}
 
 	// 取得したデータをJSONデコード
-	var bookInfo BookInfo
-	err = json.Unmarshal(body, &bookInfo)
+	var bookInfos []BookInfo
+	err = json.Unmarshal(body, &bookInfos)
 	if err != nil {
 		return "", err
 	}
 
-	return bookInfo.HTMLURL, nil
+	return bookInfos[0].HTMLURL, nil
 }
