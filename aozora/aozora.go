@@ -2,12 +2,14 @@ package aozora
 
 import "time"
 
+// Author is author Info
 type Author struct {
 	PersonID  int    `json:"person_id"`
 	LastName  string `json:"last_name"`
 	FirstName string `json:"first_name"`
 }
 
+// Book is book Info
 type Book struct {
 	BookID                      int       `json:"book_id"`
 	Title                       string    `json:"title"`
