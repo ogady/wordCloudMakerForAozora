@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/bluele/mecab-golang"
-	"github.com/ogady/wordCloudMakerForAozora/construct"
 )
 
 func ParseToNode(text string) map[string]int {
@@ -33,7 +32,7 @@ func ParseToNode(text string) map[string]int {
 	for {
 		features := strings.Split(node.Feature(), ",")
 		if features[0] == "名詞" {
-			if !contains(construct.StopWordJPN, node.Surface()) {
+			if !contains(stopWordJPN, node.Surface()) {
 				// mapのキーに単語を設定して、バリューに単語のカウントを設定し、キーに対してカウントしていく
 				wordMap[node.Surface()]++
 			}

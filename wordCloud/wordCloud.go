@@ -8,36 +8,28 @@ import (
 	"github.com/psykhi/wordclouds"
 )
 
-func CreateWordCloud(wordList map[string]int, numOfChar int) image.Image {
+type MaskConf struct {
+	File  string     `json:"file"`
+	Color color.RGBA `json:"color"`
+}
 
-	var DefaultColors = []color.RGBA{
-		{0x00, 0x76, 0x2d, 0xff},
-		{0x43, 0x76, 0x2d, 0xff},
-		{0x73, 0x76, 0x2d, 0xff},
-		{0x90, 0x76, 0x2d, 0xff},
-		{0xb7, 0x7c, 0x2d, 0xff},
-	}
+type Conf struct {
+	FontMaxSize     int          `json:"font_max_size"`
+	FontMinSize     int          `json:"font_min_size"`
+	RandomPlacement bool         `json:"random_placement"`
+	FontFile        string       `json:"font_file"`
+	Colors          []color.RGBA `json:"colors"`
+	Width           int          `json:"width"`
+	Height          int          `json:"height"`
+	Mask            MaskConf     `json:"mask"`
+}
 
-	type MaskConf struct {
-		File  string     `json:"file"`
-		Color color.RGBA `json:"color"`
-	}
-
-	type Conf struct {
-		FontMaxSize     int          `json:"font_max_size"`
-		FontMinSize     int          `json:"font_min_size"`
-		RandomPlacement bool         `json:"random_placement"`
-		FontFile        string       `json:"font_file"`
-		Colors          []color.RGBA `json:"colors"`
-		Width           int          `json:"width"`
-		Height          int          `json:"height"`
-		Mask            MaskConf     `json:"mask"`
-	}
+func CreateWordCloud(wordList map[string]int, numOfChar int, colorsSetting []color.RGBA) image.Image {
 
 	var DefaultConf = Conf{
 		RandomPlacement: false,
 		FontFile:        "./rounded-l-mplus-2c-medium.ttf",
-		Colors:          DefaultColors,
+		Colors:          colorsSetting,
 		Width:           2048,
 		Height:          2048,
 		Mask: MaskConf{"", color.RGBA{

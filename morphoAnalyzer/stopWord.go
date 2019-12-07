@@ -1,6 +1,6 @@
-package construct
+package morphoAnalyzer
 
-var StopWordENG = []string{
+var stopWordENG = []string{
 	"a",
 	"able",
 	"about",
@@ -582,7 +582,7 @@ var StopWordENG = []string{
 	"z",
 	"zero",
 }
-var StopWordJPN = []string{
+var stopWordJPN = []string{
 	"あ",
 	"い",
 	"う",

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"image/color"
 	"image/png"
 	"os"
 	"time"
@@ -16,11 +17,28 @@ import (
 func main() {
 
 	var (
-		output    = flag.String("output", "output.png", "path to output image")
-		titleName = flag.String("title", "銀河鉄道の夜", "Target TitleNames")
+		output         = flag.String("o", "output.png", "path to output image")
+		titleName      = flag.String("t", "銀河鉄道の夜", "Target TitleNames")
+		specifiedColor = flag.String("c", "red", "Specify the color to draw from ’red’, ’blue’, ’green’, and ’vivid’.")
 	)
 
 	flag.Parse()
+
+	colorsSetting := []color.RGBA{}
+
+	switch *specifiedColor {
+	case "red":
+		colorsSetting = wordCloud.RedColors
+	case "blue":
+		colorsSetting = wordCloud.BlueColors
+	case "green":
+		colorsSetting = wordCloud.GreenColors
+	case "vivid":
+		colorsSetting = wordCloud.VividColors
+	default:
+		fmt.Println("色指定がなかったのでデフォルト配色で描画します。")
+		colorsSetting = wordCloud.DefaultColors
+	}
 
 	htmlURL, err := aozora.GetBookInfoByTitleName(*titleName)
 
@@ -38,7 +56,7 @@ func main() {
 
 	fmt.Println(numOfChar)
 
-	img := wordCloud.CreateWordCloud(persedText, numOfChar)
+	img := wordCloud.CreateWordCloud(persedText, numOfChar, colorsSetting)
 	outputFile, err := os.Create(*output)
 	if err != nil {
 		fmt.Println(err)
