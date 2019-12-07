@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/ogady/wordCloudMakerForAozora/aozora"
 	"github.com/ogady/wordCloudMakerForAozora/morphoAnalyzer"
 	"github.com/ogady/wordCloudMakerForAozora/scraper"
 	"github.com/ogady/wordCloudMakerForAozora/wordCloud"
@@ -15,13 +16,21 @@ import (
 func main() {
 
 	var (
-		output = flag.String("output", "output.png", "path to output image")
-		url    = flag.String("url", "https://www.aozora.gr.jp/cards/000081/files/43737_19215.html", "Target URL")
+		output    = flag.String("output", "output.png", "path to output image")
+		titleName = flag.String("title", "銀河鉄道の夜", "Target TitleNames")
 	)
 
 	flag.Parse()
 
-	text := scraper.Scrape(*url)
+	htmlURL, err := aozora.GetBookInfoByTitleName(*titleName)
+
+	if err != nil {
+		err = fmt.Errorf("作品情報が取得できませんでした。 作品名：%s\n %w", *titleName, err)
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	text := scraper.Scrape(htmlURL)
 
 	persedText := morphoAnalyzer.ParseToNode(string(text))
 	maxCount := morphoAnalyzer.GetMaxCount(persedText)
