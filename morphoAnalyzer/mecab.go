@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/bluele/mecab-golang"
-	"github.com/ogady/wordCloudMaker/construct"
+	"github.com/ogady/wordCloudMakerForAozora/construct"
 )
 
 func ParseToNode(text string) map[string]int {

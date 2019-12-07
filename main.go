@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/ogady/wordCloudMaker/morphoAnalyzer"
-	"github.com/ogady/wordCloudMaker/scraper"
-	"github.com/ogady/wordCloudMaker/wordCloud"
+	"github.com/ogady/wordCloudMakerForAozora/morphoAnalyzer"
+	"github.com/ogady/wordCloudMakerForAozora/scraper"
+	"github.com/ogady/wordCloudMakerForAozora/wordCloud"
 )
 
 func main() {
