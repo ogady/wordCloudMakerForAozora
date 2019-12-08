@@ -1,32 +1,41 @@
-package main
+package internal
 
 import (
-	"flag"
 	"fmt"
 	"image/color"
 	"image/png"
 	"os"
 	"time"
 
-	"github.com/ogady/wordCloudMakerForAozora/aozora"
-	"github.com/ogady/wordCloudMakerForAozora/morphoAnalyzer"
-	"github.com/ogady/wordCloudMakerForAozora/scraper"
-	"github.com/ogady/wordCloudMakerForAozora/wordCloud"
+	"github.com/ogady/wordCloudMakerForAozora/pkg/aozora"
+	"github.com/ogady/wordCloudMakerForAozora/pkg/morphoAnalyzer"
+	"github.com/ogady/wordCloudMakerForAozora/pkg/scraper"
+	"github.com/ogady/wordCloudMakerForAozora/pkg/wordCloud"
 )
 
-func main() {
+type WordCloudCreater struct {
+	output         string
+	titleName      string
+	specifiedColor string
+}
 
-	var (
-		output         = flag.String("o", "output.png", "path to output image")
-		titleName      = flag.String("t", "銀河鉄道の夜", "Target TitleNames")
-		specifiedColor = flag.String("c", "red", "Specify the color to draw from ’red’, ’blue’, ’green’, and ’vivid’.")
-	)
+func NewWordCloudCreater(output, titleName, specifiedColor string) WordCloudCreater {
 
-	flag.Parse()
+	var wordCloudCreater WordCloudCreater
 
+	wordCloudCreater = WordCloudCreater{
+		output:         output,
+		titleName:      titleName,
+		specifiedColor: specifiedColor,
+	}
+	return wordCloudCreater
+
+}
+
+func (w *WordCloudCreater) Execute() error {
 	colorsSetting := []color.RGBA{}
 
-	switch *specifiedColor {
+	switch w.specifiedColor {
 	case "red":
 		colorsSetting = wordCloud.RedColors
 	case "blue":
@@ -40,10 +49,10 @@ func main() {
 		colorsSetting = wordCloud.DefaultColors
 	}
 
-	htmlURL, err := aozora.GetBookInfoByTitleName(*titleName)
+	htmlURL, err := aozora.GetBookInfoByTitleName(w.titleName)
 
 	if err != nil {
-		err = fmt.Errorf("作品情報が取得できませんでした。 作品名：%s\n %w", *titleName, err)
+		err = fmt.Errorf("作品情報が取得できませんでした。 作品名：%s\n %w", w.titleName, err)
 		fmt.Println(err)
 		os.Exit(1)
 	}
@@ -57,7 +66,7 @@ func main() {
 	fmt.Println(numOfChar)
 
 	img := wordCloud.CreateWordCloud(persedText, numOfChar, colorsSetting)
-	outputFile, err := os.Create(*output)
+	outputFile, err := os.Create(w.output)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -68,4 +77,6 @@ func main() {
 
 	outputFile.Close()
 	fmt.Printf("Done in %v\n", time.Since(start))
+
+	return nil
 }
