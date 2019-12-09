@@ -71,8 +71,6 @@ func (w *WordCloudCreater) Execute() error {
 	maxCount := morphoAnalyzer.GetMaxCount(persedText)
 	numOfChar := len([]rune(maxCount))
 
-	fmt.Println(numOfChar)
-
 	img := wordCloud.CreateWordCloud(persedText, numOfChar, colorsSetting)
 
 	outputFile, err := os.Create(w.output)
