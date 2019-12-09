@@ -2,29 +2,27 @@ package scraper
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/ogady/wordCloudMakerForAozora/pkg/decoder"
 )
 
-func Scrape(url string) string {
+func Scrape(url string) (string, error) {
 
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		err = fmt.Errorf("Document Constructorの初期化に失敗しました。\n %w", err)
+		return "", err
 	}
 
-	// ドキュメントから
 	selection := doc.Find("body > div.main_text")
 	text := selection.Text()
 
 	encodedText, err := decoder.Decode("ShiftJIS", []byte(text))
-
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		err = fmt.Errorf("文書のデコードに失敗しました。 \n %w", err)
+		return "", err
 	}
-	return string(encodedText)
+
+	return string(encodedText), nil
 }

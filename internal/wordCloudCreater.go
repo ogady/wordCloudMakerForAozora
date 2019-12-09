@@ -33,6 +33,7 @@ func NewWordCloudCreater(output, titleName, specifiedColor string) WordCloudCrea
 }
 
 func (w *WordCloudCreater) Execute() error {
+
 	colorsSetting := []color.RGBA{}
 
 	switch w.specifiedColor {
@@ -50,30 +51,41 @@ func (w *WordCloudCreater) Execute() error {
 	}
 
 	htmlURL, err := aozora.GetBookInfoByTitleName(w.titleName)
-
 	if err != nil {
 		err = fmt.Errorf("作品情報が取得できませんでした。 作品名：%s\n %w", w.titleName, err)
-		fmt.Println(err)
-		os.Exit(1)
+		return err
 	}
 
-	text := scraper.Scrape(htmlURL)
+	text, err := scraper.Scrape(htmlURL)
+	if err != nil {
+		err = fmt.Errorf("本情報のスクレイピングに失敗しました。\n%w", err)
+		return err
+	}
 
-	persedText := morphoAnalyzer.ParseToNode(string(text))
+	persedText, err := morphoAnalyzer.ParseToNode(string(text))
+	if err != nil {
+		err = fmt.Errorf("形態素解析に失敗しました。。\n%w", err)
+		return err
+	}
+
 	maxCount := morphoAnalyzer.GetMaxCount(persedText)
 	numOfChar := len([]rune(maxCount))
 
-	fmt.Println(numOfChar)
-
 	img := wordCloud.CreateWordCloud(persedText, numOfChar, colorsSetting)
+
 	outputFile, err := os.Create(w.output)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		err = fmt.Errorf("WordCloud作成に失敗しました。\n%w", err)
+		return err
 	}
+
 	start := time.Now()
 
-	png.Encode(outputFile, img)
+	err = png.Encode(outputFile, img)
+	if err != nil {
+		err = fmt.Errorf("pngのエンコードに失敗しました。%w", err)
+		return err
+	}
 
 	outputFile.Close()
 	fmt.Printf("Done in %v\n", time.Since(start))

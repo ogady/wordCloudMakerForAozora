@@ -19,6 +19,7 @@ func main() {
 	flag.Parse()
 
 	repo := internal.NewWordCloudCreater(*output, *titleName, *specifiedColor)
+
 	err := repo.Execute()
 	if err != nil {
 		log.Fatal(err)

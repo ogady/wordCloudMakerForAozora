@@ -8,24 +8,29 @@ import (
 	"github.com/bluele/mecab-golang"
 )
 
-func ParseToNode(text string) map[string]int {
+func ParseToNode(text string) (map[string]int, error) {
+
+	wordMap := make(map[string]int)
 
 	m, err := mecab.New("-Owakati")
 	if err != nil {
-		fmt.Println(err)
+		err = fmt.Errorf("MeCabの初期化（分かち書き出力モード）に失敗しました。\n %w", err)
+		return wordMap, err
 	}
 	defer m.Destroy()
 
-	wordMap := make(map[string]int)
 	tg, err := m.NewTagger()
 	if err != nil {
-		panic(err)
+		return wordMap, err
 	}
+
 	defer tg.Destroy()
+
 	lt, err := m.NewLattice(text)
 	if err != nil {
-		panic(err)
+		return wordMap, err
 	}
+
 	defer lt.Destroy()
 
 	node := tg.ParseToNode(lt)
@@ -41,8 +46,9 @@ func ParseToNode(text string) map[string]int {
 			break
 		}
 	}
-	return wordMap
+	return wordMap, nil
 }
+
 func contains(sl []string, s string) bool {
 
 	for _, v := range sl {
@@ -68,7 +74,6 @@ func GetMaxCount(m map[string]int) string {
 	}
 
 	sort.SliceStable(a, func(i, j int) bool { return a[i].value < a[j].value })
-	fmt.Println(a[len(a)-1].name)
-	fmt.Println(a)
+
 	return a[len(a)-1].name
 }

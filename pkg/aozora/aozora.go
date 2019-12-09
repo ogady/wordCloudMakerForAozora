@@ -2,6 +2,7 @@ package aozora
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -73,6 +74,7 @@ func GetBookInfoByTitleName(titleName string) (string, error) {
 	// APIを叩いてデータを取得
 	resp, err := http.Get(url)
 	if err != nil {
+		err = fmt.Errorf("青空文庫APIのコールに失敗しました。URL：%s \n %w", url, err)
 		return "", err
 	}
 
@@ -80,13 +82,16 @@ func GetBookInfoByTitleName(titleName string) (string, error) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		err = fmt.Errorf("レスポンスボディの読み込みに失敗しました。\n %w", err)
 		return "", err
 	}
 
 	// 取得したデータをJSONデコード
 	var bookInfos []BookInfo
+
 	err = json.Unmarshal(body, &bookInfos)
 	if err != nil {
+		err = fmt.Errorf("レスポンスボディを構造体にマッピングできませんでした。\n %w", err)
 		return "", err
 	}
 
