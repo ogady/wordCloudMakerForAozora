@@ -24,6 +24,19 @@ type Conf struct {
 	Mask            MaskConf     `json:"mask"`
 }
 
+func (c *Conf) calcFontMaxSize(numOfChar int) int {
+	var fontMaxSize int
+	fontMaxSize = int(float32(c.Width) * 0.4 / float32(numOfChar))
+
+	return fontMaxSize
+}
+
+func (c *Conf) calcFontMinSize(numOfChar int) int {
+	var fontMinSize int
+	fontMinSize = int(float32(c.Width) * 0.4 / float32(numOfChar) / 10)
+	return fontMinSize
+}
+
 func CreateWordCloud(wordList map[string]int, numOfChar int, colorsSetting []color.RGBA) image.Image {
 
 	var DefaultConf = Conf{
@@ -61,8 +74,8 @@ func CreateWordCloud(wordList map[string]int, numOfChar int, colorsSetting []col
 
 	w := wordclouds.NewWordcloud(wordList,
 		wordclouds.FontFile(conf.FontFile),
-		wordclouds.FontMaxSize(conf.Width/(numOfChar+5)),
-		wordclouds.FontMinSize(conf.Width/(numOfChar+5)/10),
+		wordclouds.FontMaxSize(conf.calcFontMaxSize(numOfChar)),
+		wordclouds.FontMinSize(conf.calcFontMinSize(numOfChar)),
 		wordclouds.Colors(colors),
 		wordclouds.MaskBoxes(boxes),
 		wordclouds.Height(conf.Height),

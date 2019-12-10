@@ -86,7 +86,7 @@ func GetBookInfoByTitleName(titleName string) (string, error) {
 		return "", err
 	}
 
-	// 取得したデータをJSONデコード
+	// 取得したデータをJSONに
 	var bookInfos []BookInfo
 
 	err = json.Unmarshal(body, &bookInfos)
