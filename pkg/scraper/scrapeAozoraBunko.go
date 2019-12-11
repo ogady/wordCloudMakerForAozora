@@ -20,7 +20,7 @@ func Scrape(url string) (string, error) {
 
 	encodedText, err := decoder.Decode("ShiftJIS", []byte(text))
 	if err != nil {
-		err = fmt.Errorf("文書のデコードに失敗しました。 \n %w", err)
+		err = fmt.Errorf("UTF8への変換に失敗しました。 \n %w", err)
 		return "", err
 	}
 

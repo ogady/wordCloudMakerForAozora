@@ -1,7 +1,6 @@
 package wordCloud
 
 import (
-	"flag"
 	"image"
 	"image/color"
 
@@ -53,9 +52,6 @@ func CreateWordCloud(wordList map[string]int, numOfChar int, colorsSetting []col
 		}},
 	}
 
-	flag.Parse()
-
-	// Load config
 	conf := DefaultConf
 
 	var boxes []*wordclouds.Box
