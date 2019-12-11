@@ -40,7 +40,7 @@ func CreateWordCloud(wordList map[string]int, numOfChar int, colorsSetting []col
 
 	var DefaultConf = Conf{
 		RandomPlacement: false,
-		FontFile:        "./config/rounded-l-mplus-2c-medium.ttf",
+		FontFile:        "./rounded-l-mplus-2c-medium.ttf",
 		Colors:          colorsSetting,
 		Width:           2048,
 		Height:          2048,
