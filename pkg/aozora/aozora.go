@@ -95,5 +95,9 @@ func GetBookInfoByTitleName(titleName string) (string, error) {
 		return "", err
 	}
 
+	if len(bookInfos) == 0 {
+		return "", fmt.Errorf("書籍情報が見つかりませんでした。タイトル: %s", titleName)
+	}
+
 	return bookInfos[0].HTMLURL, nil
 }
